@@ -97,23 +97,30 @@
             quietPeriod = 500,
             paginationList = "";
 
-        $.fn.transformPage = function(settings, pos, index, next_el) {
-            if (typeof settings.beforeMove == 'function') settings.beforeMove(index, next_el);
-            $(this).css({
-                "-webkit-transform": "translate3d(0, " + pos + "%, 0)",
-                "-webkit-transition": "-webkit-transform " + settings.animationTime + "ms " + settings.easing,
-                "-moz-transform": "translate3d(0, " + pos + "%, 0)",
-                "-moz-transition": "-moz-transform " + settings.animationTime + "ms " + settings.easing,
-                "-ms-transform": "translate3d(0, " + pos + "%, 0)",
-                "-ms-transition": "-ms-transform " + settings.animationTime + "ms " + settings.easing,
-                "transform": "translate3d(0, " + pos + "%, 0)",
-                "transition": "transform " + settings.animationTime + "ms " + settings.easing
-            });
+		$.fn.transformPage = function(settings, pos, index) {
+		    if(document.all && !window.atob) {
+    			$(this).animate({
+    			    top: pos + '%'
+    			}, settings.animationTime, function() {
+    			    if(typeof settings.afterMove == 'function') settings.afterMove(index);
+    			});
+		    } else {
+    			$(this).css({
+    			    "-webkit-transform": "translate3d(0, " + pos + "%, 0)",
+    			    "-webkit-transition": "all " + settings.animationTime + "ms " + settings.easing,
+    			    "-moz-transform": "translate3d(0, " + pos + "%, 0)",
+    			    "-moz-transition": "all " + settings.animationTime + "ms " + settings.easing,
+    			    "-ms-transform": "translate3d(0, " + pos + "%, 0)",
+    			    "-ms-transition": "all " + settings.animationTime + "ms " + settings.easing,
+    			    "transform": "translate3d(0, " + pos + "%, 0)",
+    			    "transition": "all " + settings.animationTime + "ms " + settings.easing
+    			});
 
-            $(this).one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(e) {
-                if (typeof settings.afterMove == 'function') settings.afterMove(index, next_el);
-            });
-        };
+    			$(this).one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(e) {
+    			    if (typeof settings.afterMove == 'function') settings.afterMove(index);
+    			});
+		    }
+		};
 
         $.fn.moveDown = function() {
             var el = $(this),
